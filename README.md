@@ -47,4 +47,4 @@ streamlit run dashboard/app.py
 
 ## Dashboard Preview
 
-![Retail Analytics Dashboard](screenshots/dashboard.png)
+![Retail Analytics Dashboard](images/dashboard.png)
