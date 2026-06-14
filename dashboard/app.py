@@ -1,7 +1,20 @@
 import streamlit as st
 import pandas as pd
+import plotly.express as px
+
+st.set_page_config(
+    page_title="Retail Analytics Dashboard",
+    page_icon="📊",
+    layout="wide"
+)
 
 st.title("Retail Analytics Dashboard")
+st.markdown(
+    """
+    Interactive dashboard for exploring supermarket sales performance
+    across branches, customer segments, and product categories.
+    """
+)
 
 df = pd.read_csv("data/raw/supermarket_sales.csv")
 
@@ -68,20 +81,43 @@ with col2:
 with col3:
     st.metric("Avg Basket Value", f"${avg_basket:,.2f}")  
 
+col1, col2 = st.columns([3, 2])
+
 weekday_revenue = filtered_df.groupby("Weekday")["Total"].sum()    
 
-st.subheader("Revenue Trends by Weekday")
-st.bar_chart(weekday_revenue)
+with col1:
+    st.subheader("Revenue Trends by Weekday")
+    st.bar_chart(weekday_revenue)
 
 hourly_transactions = filtered_df.groupby("Hour")["Invoice ID"].count()
 
-st.subheader("Customer Traffic by Hour")
-st.line_chart(hourly_transactions)
+with col2:
+    st.subheader("Customer Traffic by Hour")
+    st.line_chart(hourly_transactions)
 
-product_revenue = filtered_df.groupby("Product line")["Total"].sum().sort_values(ascending=False)
+product_revenue = filtered_df.groupby("Product line")["Total"].sum().sort_values(ascending=True)
 
 st.subheader("Revenue by Product Line")
-st.bar_chart(product_revenue)
+fig = px.bar(
+    product_revenue,
+    x=product_revenue.values,
+    y=product_revenue.index,
+    orientation="h",
+    labels={
+        "x": "Revenue",
+        "y": "Product Line"
+    },
+    template="plotly_dark"
+)
+
+fig.update_traces(marker_color="#83c9ff")
+
+st.plotly_chart(fig, use_container_width=True)
 
 # st.write("Dataset Preview")
 # st.dataframe(df.head())
+
+st.markdown("---")
+st.caption(
+    "Built with Python, Pandas, Streamlit and Matplotlib"
+)
