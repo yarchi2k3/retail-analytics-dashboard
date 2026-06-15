@@ -20,7 +20,10 @@ df = pd.read_csv("data/raw/supermarket_sales.csv")
 
 df["Date"] = pd.to_datetime(df["Date"])
 df["Weekday"] = df["Date"].dt.day_name()
-df["Time"] = pd.to_datetime(df["Time"])
+df["Time"] = pd.to_datetime(
+    df["Time"],
+    format="%H:%M"
+)
 df["Hour"] = df["Time"].dt.hour
 
 weekday_order = [
@@ -112,7 +115,10 @@ fig = px.bar(
 
 fig.update_traces(marker_color="#83c9ff")
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(
+    fig,
+    width="stretch"
+)
 
 # st.write("Dataset Preview")
 # st.dataframe(df.head())
